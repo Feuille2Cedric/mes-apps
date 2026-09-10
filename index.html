@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f0ea">
+  <title>Mes apps</title>
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="./index.html" aria-label="Mes apps">
+      <span class="brand-symbol">C</span>
+      <span><strong>Mes apps</strong><small>Atelier Cedric</small></span>
+    </a>
+    <nav aria-label="Navigation">
+      <a href="#online">GitHub Pages</a>
+      <a href="#local">Dossier DEV</a>
+    </nav>
+    <div class="sidebar-note">
+      <span id="online-count">0</span>
+      <p>apps deployees et accessibles en ligne.</p>
+    </div>
+  </aside>
+
+  <main>
+    <header class="page-head">
+      <div>
+        <p class="kicker">Bibliotheque de projets</p>
+        <h1>Tes apps, au meme endroit.</h1>
+      </div>
+      <label class="search-box">
+        <span>Rechercher</span>
+        <input id="search" type="search" placeholder="Club 33, One Piece, Vinted..." autocomplete="off">
+      </label>
+    </header>
+
+    <section class="filters" aria-label="Filtrer les projets">
+      <button class="active" type="button" data-filter="all">Tout</button>
+      <button type="button" data-filter="online">En ligne</button>
+      <button type="button" data-filter="local">Local</button>
+    </section>
+
+    <section id="online" class="section-title">
+      <h2>Apps en ligne</h2>
+      <p>Les projets deployes sur GitHub Pages.</p>
+    </section>
+    <section id="online-grid" class="app-grid" aria-live="polite"></section>
+
+    <section id="local" class="section-title">
+      <h2>Dans le dossier DEV</h2>
+      <p>Les projets reperes en local qui ne sont pas tous publies.</p>
+    </section>
+    <section id="local-grid" class="local-grid" aria-live="polite"></section>
+  </main>
+</body>
+</html>
