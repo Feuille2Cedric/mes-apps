@@ -27,11 +27,12 @@ jobs:
           test -f index.html
           test -f app.js
           test -f style.css
+          test -f favicon.png
           ! grep -R "\.\./" index.html app.js style.css
       - name: Prepare static site
         run: |
           mkdir public
-          cp index.html app.js style.css public/
+          cp index.html app.js style.css favicon.png public/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
