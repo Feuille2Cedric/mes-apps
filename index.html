@@ -30,10 +30,13 @@
         <p class="kicker">Bibliotheque de projets</p>
         <h1>Tes apps, au meme endroit.</h1>
       </div>
-      <label class="search-box">
-        <span>Rechercher</span>
-        <input id="search" type="search" placeholder="Club 33, One Piece, Vinted..." autocomplete="off">
-      </label>
+      <div class="head-actions">
+        <label class="search-box">
+          <span>Rechercher</span>
+          <input id="search" type="search" placeholder="Club 33, One Piece, Vinted..." autocomplete="off">
+        </label>
+        <button id="add-app" class="add-button" type="button">Ajouter</button>
+      </div>
     </header>
 
     <section class="filters" aria-label="Filtrer les projets">
@@ -48,11 +51,36 @@
     </section>
     <section id="online-grid" class="app-grid" aria-live="polite"></section>
 
+    <section id="manual" class="section-title">
+      <h2>Ajoutees a la main</h2>
+      <p>Les apps que tu ajoutes depuis ce navigateur.</p>
+    </section>
+    <section id="manual-grid" class="app-grid" aria-live="polite"></section>
+
     <section id="local" class="section-title">
       <h2>Dans le dossier DEV</h2>
       <p>Les projets reperes en local qui ne sont pas tous publies.</p>
     </section>
     <section id="local-grid" class="local-grid" aria-live="polite"></section>
   </main>
+
+  <dialog id="app-dialog">
+    <form id="app-form">
+      <div class="dialog-head">
+        <div>
+          <p class="kicker">Nouvelle app</p>
+          <h2>Ajouter une app</h2>
+        </div>
+        <button class="icon-close" type="button" value="cancel" aria-label="Fermer">x</button>
+      </div>
+      <label>Nom<input name="name" maxlength="60" required placeholder="Ex. Mon outil"></label>
+      <label>Lien de l'app<input name="url" type="url" maxlength="500" required placeholder="https://..."></label>
+      <label>Lien GitHub<input name="github" type="url" maxlength="500" placeholder="https://github.com/..."></label>
+      <label>Categorie<input name="category" maxlength="30" placeholder="Jeu, musique, outil..."></label>
+      <label>Description<textarea name="description" maxlength="180" placeholder="A quoi sert cette app ?"></textarea></label>
+      <p class="form-error" role="alert"></p>
+      <button class="submit-button" type="submit">Ajouter l'app</button>
+    </form>
+  </dialog>
 </body>
 </html>

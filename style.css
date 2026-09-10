@@ -106,7 +106,7 @@ main {
 
 .page-head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 390px);
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 460px);
   align-items: end;
   gap: 28px;
   margin-bottom: 18px;
@@ -129,12 +129,29 @@ h1 {
   letter-spacing: 0;
 }
 
+.head-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 10px;
+}
+
 .search-box {
   display: grid;
   gap: 8px;
   color: var(--muted);
   font-size: 12px;
   font-weight: 700;
+}
+
+.add-button {
+  height: 48px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 16px;
+  color: white;
+  background: var(--blue);
+  font-weight: 800;
 }
 
 input {
@@ -275,7 +292,8 @@ input:focus {
   margin-top: 12px;
 }
 
-.actions a {
+.actions a,
+.actions button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -288,6 +306,10 @@ input:focus {
   font-size: 13px;
   font-weight: 800;
   background: white;
+}
+
+.actions button {
+  color: #9f2d20;
 }
 
 .actions .launch {
@@ -347,6 +369,93 @@ input:focus {
   text-align: center;
 }
 
+dialog {
+  width: min(520px, calc(100% - 28px));
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 0;
+  color: var(--ink);
+  background: var(--panel);
+  box-shadow: 0 28px 90px rgba(25, 27, 32, .22);
+}
+
+dialog::backdrop {
+  background: rgba(25, 27, 32, .42);
+  backdrop-filter: blur(4px);
+}
+
+#app-form {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+}
+
+.dialog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 2px;
+}
+
+.dialog-head h2 {
+  font-size: 28px;
+}
+
+.icon-close {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--muted);
+  background: white;
+  font-weight: 800;
+}
+
+#app-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+textarea {
+  min-height: 88px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: var(--ink);
+  background: white;
+  font: inherit;
+  outline: none;
+}
+
+textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(48, 86, 211, .12);
+}
+
+.form-error {
+  min-height: 18px;
+  color: #9f2d20;
+  font-size: 13px;
+}
+
+.form-error:empty {
+  display: none;
+}
+
+.submit-button {
+  height: 48px;
+  border: 0;
+  border-radius: 12px;
+  color: white;
+  background: var(--ink);
+  font-weight: 800;
+}
+
 @media (max-width: 1040px) {
   body { grid-template-columns: 1fr; }
   .sidebar {
@@ -370,7 +479,8 @@ input:focus {
   }
   nav { display: none; }
   main { padding: 24px 16px 48px; }
-  .page-head { grid-template-columns: 1fr; }
+  .page-head,
+  .head-actions { grid-template-columns: 1fr; }
   h1 { font-size: 44px; }
   .section-title { display: block; }
   .section-title p { margin-top: 6px; }

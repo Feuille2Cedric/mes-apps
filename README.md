@@ -2,6 +2,8 @@
 
 Hub statique pour retrouver les apps deployees sur GitHub Pages et les projets presents dans `DEV`.
 
+Le bouton **Ajouter** permet d'ajouter une app a la main. Ces ajouts sont gardes dans le `localStorage` du navigateur utilise.
+
 Apps GitHub Pages listees :
 
 - Club 33

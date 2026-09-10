@@ -77,12 +77,29 @@ const localProjects = [
   { name: 'one', folder: 'DEV/one', status: 'A completer', description: 'Dossier present dans DEV, sans index.html ni README detecte.' }
 ];
 
+const STORAGE_KEY = 'mes-apps-manual';
 const onlineGrid = document.querySelector('#online-grid');
+const manualGrid = document.querySelector('#manual-grid');
 const localGrid = document.querySelector('#local-grid');
 const search = document.querySelector('#search');
 const onlineCount = document.querySelector('#online-count');
-const localCount = document.querySelector('#local-count');
+const dialog = document.querySelector('#app-dialog');
+const form = document.querySelector('#app-form');
 let activeFilter = 'all';
+let manualApps = loadManualApps();
+
+function loadManualApps() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    return Array.isArray(parsed) ? parsed.filter(app => app.name && app.url) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveManualApps() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(manualApps));
+}
 
 function normalize(value) {
   return value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -102,11 +119,19 @@ function filterLocal(project) {
   return activeFilter !== 'online' && includesQuery(project);
 }
 
-function card(app, index) {
+function initials(name) {
+  return name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase() || 'AP';
+}
+
+function makeId() {
+  return crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function card(app, index, manual = false) {
   return `
     <article class="app-card" style="--accent:${app.accent}">
       <div class="card-top">
-        <span class="app-icon">${app.short}</span>
+        <span class="app-icon">${app.short || initials(app.name)}</span>
         <span class="pill">${app.category}</span>
       </div>
       <div>
@@ -119,7 +144,8 @@ function card(app, index) {
       </div>
       <div class="actions">
         <a class="launch" href="${app.url}" target="_blank" rel="noopener noreferrer">Ouvrir</a>
-        <a href="${app.github}" target="_blank" rel="noopener noreferrer">GitHub</a>
+        ${app.github ? `<a href="${app.github}" target="_blank" rel="noopener noreferrer">GitHub</a>` : ''}
+        ${manual ? `<button type="button" data-delete-manual="${app.id}">Supprimer</button>` : ''}
       </div>
     </article>
   `;
@@ -140,12 +166,16 @@ function localRow(project) {
 
 function render() {
   const online = onlineApps.filter(filterOnline);
+  const manual = manualApps.filter(filterOnline);
   const local = localProjects.filter(filterLocal);
-  onlineCount.textContent = onlineApps.length;
+  onlineCount.textContent = onlineApps.length + manualApps.length;
   onlineGrid.innerHTML = online.map(card).join('') || '<p class="empty">Aucune app en ligne ne correspond a la recherche.</p>';
+  manualGrid.innerHTML = manual.map((app, index) => card(app, index, true)).join('') || '<p class="empty">Aucune app ajoutee a la main.</p>';
   localGrid.innerHTML = local.map(localRow).join('') || '<p class="empty">Aucun projet local ne correspond a la recherche.</p>';
   document.querySelector('#online').hidden = activeFilter === 'local';
   onlineGrid.hidden = activeFilter === 'local';
+  document.querySelector('#manual').hidden = activeFilter === 'local';
+  manualGrid.hidden = activeFilter === 'local';
   document.querySelector('#local').hidden = activeFilter === 'online';
   localGrid.hidden = activeFilter === 'online';
 }
@@ -159,4 +189,37 @@ document.querySelectorAll('[data-filter]').forEach(button => {
 });
 
 search.addEventListener('input', render);
+document.querySelector('#add-app').addEventListener('click', () => {
+  form.reset();
+  form.querySelector('.form-error').textContent = '';
+  dialog.showModal();
+});
+document.querySelector('.icon-close').addEventListener('click', () => dialog.close());
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  const data = Object.fromEntries(new FormData(form));
+  const name = data.name.trim();
+  const url = data.url.trim();
+  const github = data.github.trim();
+  const category = data.category.trim() || 'App';
+  const description = data.description.trim() || 'App ajoutee manuellement.';
+  try {
+    new URL(url);
+    if (github) new URL(github);
+  } catch {
+    form.querySelector('.form-error').textContent = 'Entre une URL valide.';
+    return;
+  }
+  manualApps.unshift({ id: makeId(), name, short: initials(name), repo: new URL(url).hostname, category, accent: '#3056d3', url, github, description });
+  saveManualApps();
+  dialog.close();
+  render();
+});
+manualGrid.addEventListener('click', event => {
+  const button = event.target.closest('[data-delete-manual]');
+  if (!button) return;
+  manualApps = manualApps.filter(app => app.id !== button.dataset.deleteManual);
+  saveManualApps();
+  render();
+});
 render();
