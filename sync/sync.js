@@ -40,10 +40,7 @@
    const container=document.createElement('div');container.innerHTML=`<div class="sync-lock" hidden><p>Connecte-toi à ton compte pour retrouver tes informations.</p></div><div class="personal-sync"><span id="sync-status" role="status">Sur cet appareil</span><button id="sync-account">Synchroniser</button></div><dialog class="sync-dialog"><button class="sync-close" type="button">Fermer</button><h2>Mes données, partout.</h2><p>Connecte-toi avec la même adresse e-mail sur tes appareils. Tes données restent privées.</p><form id="sync-login"><label>Adresse e-mail<input id="sync-email" type="email" required autocomplete="email"></label><button>Recevoir un lien de connexion</button></form><div class="sync-actions" id="sync-connected" hidden><button id="sync-now">Synchroniser maintenant</button><button id="sync-logout">Se déconnecter</button></div><p class="sync-message" role="status"></p><div id="sync-conflict" hidden><p>Deux versions différentes existent. Exporte-les avant de choisir laquelle conserver.</p><div class="sync-actions"><button id="sync-backup">Exporter les deux versions</button><button id="sync-use-cloud" disabled>Garder la version en ligne</button><button id="sync-use-local" disabled>Garder celle de cet appareil</button></div></div></dialog>`;
    document.body.append(container);
    q('#sync-account').onclick=()=>q('.sync-dialog').showModal();q('.sync-close').onclick=()=>q('.sync-dialog').close();
-   q('#sync-login').onsubmit=async event=>{event.preventDefault();if(!this.client)return this.message('La synchronisation doit encore être activée dans Supabase. Tes données locales sont conservées.');
-    const button=event.target.querySelector('button');button.disabled=true;
-    try{const {error}=await this.client.auth.signInWithOtp({email:q('#sync-email').value.trim(),options:{emailRedirectTo:location.origin+location.pathname}});if(error)throw error;this.message('Ouvre le lien reçu par e-mail dans ce navigateur.');}catch(e){this.message(e.message);}finally{button.disabled=false;}
-   };
+   this.auth=new PersonalAuth(this);
    q('#sync-now').onclick=()=>this.cycle();
    q('#sync-logout').onclick=async()=>{if(this.busy)return this.message('Attends la fin de la synchronisation.');const {error}=await this.client.auth.signOut({scope:'local'});if(error)this.message(error.message);else{this.user=null;this.lock(Boolean(this.meta.owner));this.authUI();}};
    q('#sync-backup').onclick=()=>this.backupConflict();
@@ -52,16 +49,16 @@
   status(text){q('#sync-status').textContent=text;}
   message(text){q('.sync-message').textContent=text;}
   lock(value){q('.sync-lock').hidden=!value;document.querySelectorAll('main,aside').forEach(el=>el.inert=value);if(value)document.querySelectorAll('dialog:not(.sync-dialog)').forEach(el=>el.close());}
-  authUI(){q('#sync-login').hidden=Boolean(this.user);q('#sync-connected').hidden=!this.user;q('#sync-account').textContent=this.user?'Mon compte':'Se connecter';this.status(this.user?'Connexion établie':'Sur cet appareil');}
+  authUI(){this.auth.update();q('#sync-login').hidden=Boolean(this.user);q('#sync-connected').hidden=!this.user;q('#sync-account').textContent=this.user?'Mon compte':'Se connecter';this.status(this.user?'Connexion établie':'Sur cet appareil');}
   async init(){
    const opening=indexedDB.open('personal-app-sync',1);opening.onupgradeneeded=()=>opening.result.createObjectStore('meta');this.db=await get(opening);
    this.meta=await get(this.db.transaction('meta').objectStore('meta').get(this.a.app))||{};
    const c=window.PERSONAL_SYNC_CONFIG;
    if(!c?.url||!c?.key||!window.supabase){this.status('Synchronisation à activer');return;}
    this.client=window.supabase.createClient(c.url,c.key,{auth:{storageKey:'personal-app-auth',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+   this.client.auth.onAuthStateChange((event,session)=>{setTimeout(()=>{if(event==='PASSWORD_RECOVERY')this.auth.recovery=true;this.user=session?.user||null;this.checkAccount();},0);});
    const {data,error}=await this.client.auth.getSession();if(error)this.message(error.message);
    this.user=data?.session?.user||null;this.checkAccount();
-   this.client.auth.onAuthStateChange((event,session)=>{setTimeout(()=>{this.user=session?.user||null;this.checkAccount();},0);});
    this.interval=setInterval(()=>this.cycle(),15000);window.addEventListener('online',()=>this.cycle());window.addEventListener('focus',()=>this.cycle());
    await this.cycle();
   }
@@ -95,7 +92,7 @@
    return this.runCycle();
   }
   async runCycle(){
-   if(!this.client||!this.user||this.busy||this.pendingConflict||this.meta.owner&&this.meta.owner!==this.user.id)return;
+   if(!this.client||!this.user||this.auth.recovery||this.busy||this.pendingConflict||this.meta.owner&&this.meta.owner!==this.user.id)return;
    if(this.a.editing()){this.status('Écriture en cours · envoi après fermeture de l’éditeur');return;}
    this.busy=true;const owner=this.user.id;let release=()=>{};
    try{

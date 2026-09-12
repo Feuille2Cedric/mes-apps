@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
-ALLOWED = {'/', '/index.html', '/app.js', '/style.css', '/favicon.png', '/sync/config.js', '/sync/supabase.js', '/sync/sync.js', '/sync/adapter.js', '/sync/sync.css'}
+ALLOWED = {'/', '/index.html', '/app.js', '/style.css', '/favicon.png', '/sync/config.js', '/sync/auth.js', '/sync/supabase.js', '/sync/sync.js', '/sync/adapter.js', '/sync/sync.css'}
 
 
 class Handler(SimpleHTTPRequestHandler):

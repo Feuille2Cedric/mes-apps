@@ -76,7 +76,7 @@ Depuis l'interface :
 
 L'app apparaît immédiatement dans le dashboard.
 
-Les ajouts manuels sont conservés dans le navigateur et synchronisés avec ton compte. Clique sur **Synchroniser**, utilise ton adresse e-mail et ouvre le lien reçu dans ce navigateur. Commence sur l’appareil contenant tes liens, attends **✓ Synchronisé**, puis connecte-toi avec la même adresse ailleurs.
+Les ajouts manuels sont conservés dans le navigateur et synchronisés avec ton compte. Clique sur **Se connecter** et utilise ton e-mail et ton mot de passe. Commence sur l’appareil contenant tes liens, attends **✓ Synchronisé**, puis utilise le même compte ailleurs. Si tu utilisais un lien par e-mail, définis ton mot de passe dans **Mon compte → Définir ou changer mon mot de passe**. Les connexions suivantes n’envoient aucun e-mail.
 
 ## Stockage
 
