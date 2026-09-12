@@ -33,6 +33,8 @@ jobs:
         run: |
           mkdir public
           cp index.html app.js style.css favicon.png public/
+          mkdir public/sync
+          cp sync/config.js sync/supabase.js sync/sync.js sync/adapter.js sync/sync.css public/sync/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

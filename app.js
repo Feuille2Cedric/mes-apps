@@ -99,6 +99,7 @@ function loadManualApps() {
 
 function saveManualApps() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(manualApps));
+  window.mesAppsSync?.mark();
 }
 
 function normalize(value) {
@@ -128,6 +129,8 @@ function makeId() {
 }
 
 function card(app, index, manual = false) {
+  app = {...app, url: safeUrl(app.url) ? app.url : '#', github: safeUrl(app.github) ? app.github : '', accent: /^#[0-9a-f]{6}$/i.test(app.accent) ? app.accent : '#3056d3'};
+  app = Object.fromEntries(Object.entries(app).map(([key,value]) => [key, escapeHTML(value)]));
   return `
     <article class="app-card" style="--accent:${app.accent}">
       <div class="card-top">
@@ -151,6 +154,14 @@ function card(app, index, manual = false) {
   `;
 }
 
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function safeUrl(value) {
+  try { const url = new URL(value); return ['http:', 'https:'].includes(url.protocol); } catch { return false; }
+}
+
 function localRow(project) {
   return `
     <article class="local-card">
@@ -169,7 +180,7 @@ function render() {
   const manual = manualApps.filter(filterOnline);
   const local = localProjects.filter(filterLocal);
   onlineCount.textContent = onlineApps.length + manualApps.length;
-  onlineGrid.innerHTML = online.map(card).join('') || '<p class="empty">Aucune app en ligne ne correspond a la recherche.</p>';
+  onlineGrid.innerHTML = online.map((app,index)=>card(app,index)).join('') || '<p class="empty">Aucune app en ligne ne correspond a la recherche.</p>';
   manualGrid.innerHTML = manual.map((app, index) => card(app, index, true)).join('') || '<p class="empty">Aucune app ajoutee a la main.</p>';
   localGrid.innerHTML = local.map(localRow).join('') || '<p class="empty">Aucun projet local ne correspond a la recherche.</p>';
   document.querySelector('#online').hidden = activeFilter === 'local';
@@ -204,8 +215,7 @@ form.addEventListener('submit', event => {
   const category = data.category.trim() || 'App';
   const description = data.description.trim() || 'App ajoutee manuellement.';
   try {
-    new URL(url);
-    if (github) new URL(github);
+    if (!safeUrl(url) || github && !safeUrl(github)) throw Error('URL');
   } catch {
     form.querySelector('.form-error').textContent = 'Entre une URL valide.';
     return;
@@ -223,3 +233,5 @@ manualGrid.addEventListener('click', event => {
   render();
 });
 render();
+
+if(window.startMesAppsSync)window.startMesAppsSync();

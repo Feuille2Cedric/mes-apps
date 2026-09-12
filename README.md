@@ -76,11 +76,11 @@ Depuis l'interface :
 
 L'app apparaît immédiatement dans le dashboard.
 
-Les ajouts manuels sont stockés dans le navigateur utilisé. Ils ne sont pas encore synchronisés entre plusieurs appareils.
+Les ajouts manuels sont conservés dans le navigateur et synchronisés avec ton compte. Clique sur **Synchroniser**, utilise ton adresse e-mail et ouvre le lien reçu dans ce navigateur. Commence sur l’appareil contenant tes liens, attends **✓ Synchronisé**, puis connecte-toi avec la même adresse ailleurs.
 
 ## Stockage
 
-Cette app n'utilise pas de base de données distante.
+Supabase conserve une copie privée des liens ajoutés manuellement. La synchronisation se lance après la fermeture du formulaire et vérifie les autres appareils toutes les 15 secondes tant que la page est ouverte. Sans compte, les données restent locales. Le dashboard ne synchronise pas les données internes des applications vers lesquelles il pointe.
 
 Les données ajoutées manuellement sont stockées dans :
 
@@ -94,7 +94,9 @@ Clé utilisée :
 mes-apps-manual
 ```
 
-Conséquence : si tu changes de navigateur ou d'ordinateur, les ajouts manuels ne suivent pas automatiquement.
+En cas de coupure réseau, tes changements restent dans le navigateur et sont envoyés au retour de la connexion. Attends **✓ Synchronisé** avant d’effacer les données du site. Si deux appareils modifient le même champ, un export des deux versions précède le choix de celle à conserver. Les 20 versions précédentes sont gardées en base.
+
+Configuration et fonctionnement : **[guide Supabase](sync/SETUP.md)**.
 
 ## Lancement local
 
@@ -139,13 +141,13 @@ URL publique :
 
 L'app ne contient pas de mot de passe, pas de clé privée et pas de secret.
 
-Les liens GitHub Pages et GitHub sont publics. Les données manuelles restent locales au navigateur.
+Les liens intégrés sont publics. Les données manuelles synchronisées sont accessibles uniquement au compte connecté grâce aux règles RLS de Supabase. La clé publique présente dans le code ne donne pas accès à ces données. Une déconnexion masque les liens privés conservés dans le navigateur.
 
 Le serveur local est volontairement limité pour ne pas exposer le contenu complet du dossier `mes-apps`.
 
 ## Limites actuelles
 
-- Les ajouts manuels ne sont pas partagés entre appareils.
+- La synchronisation nécessite de se connecter au même compte sur chaque appareil.
 - Les projets locaux ne sont pas scannés automatiquement en temps réel.
 - Les apps déployées par défaut sont listées dans `app.js`.
 - Il n'y a pas encore de pourcentage d'avancement projet dans cette app.
