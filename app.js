@@ -1,5 +1,15 @@
 const onlineApps = [
   {
+    name: 'Absolut Director',
+    short: 'AD',
+    repo: 'absolutDirector',
+    category: 'Cinema',
+    accent: '#c9a24b',
+    url: 'https://feuille2cedric.github.io/absolutDirector/',
+    github: 'https://github.com/Feuille2Cedric/absolutDirector',
+    description: 'Construis une carriere dans le cinema : films, equipes, studio et modes arcade.'
+  },
+  {
     name: 'Club 33',
     short: '33',
     repo: 'club-33',
@@ -72,7 +82,6 @@ const onlineApps = [
 ];
 
 const localProjects = [
-  { name: 'absolutDirector', folder: 'DEV/absolutDirector', status: 'Local', description: 'Projet local avec une page HTML, pas de GitHub Pages detecte.' },
   { name: 'framed', folder: 'DEV/framed', status: 'Local', description: 'Version locale du jeu Framed.' },
   { name: 'one', folder: 'DEV/one', status: 'A completer', description: 'Dossier present dans DEV, sans index.html ni README detecte.' }
 ];

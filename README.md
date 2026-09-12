@@ -44,6 +44,7 @@ Les apps suivantes sont présentes dans le dashboard par défaut :
 
 | App | Catégorie | Lien |
 | --- | --- | --- |
+| Absolut Director | Cinéma | https://feuille2cedric.github.io/absolutDirector/ |
 | Club 33 | Musique | https://feuille2cedric.github.io/club-33/ |
 | Dragon Quiz | Jeu | https://feuille2cedric.github.io/dragon-ball/ |
 | Grand Line Quiz | Jeu | https://feuille2cedric.github.io/one-piece/ |
@@ -56,7 +57,6 @@ Les apps suivantes sont présentes dans le dashboard par défaut :
 
 Le dashboard référence aussi des projets présents localement dans `DEV` :
 
-- `absolutDirector`
 - `framed`
 - `one`
 
